@@ -33,4 +33,5 @@
             </main>
         </div>
     </body>
+    @stack('local_scripts')
 </html>
