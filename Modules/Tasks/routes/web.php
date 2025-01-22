@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Tasks\Http\Controllers\ProjectsController;
 use Modules\Tasks\Http\Controllers\TasksController;
 
 /*
@@ -16,5 +17,5 @@ use Modules\Tasks\Http\Controllers\TasksController;
 
 Route::group([], function () {
     Route::resource('tasks', TasksController::class)->names('tasks');
-    // Route::get('tasks', TasksController::class)->name('tasks.tasks');
+    Route::resource('projects', ProjectsController::class)->names('projects');
 });
