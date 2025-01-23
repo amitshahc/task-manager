@@ -19,6 +19,7 @@ return new class extends Migration
             $table->integer('priority')->default(0);
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
