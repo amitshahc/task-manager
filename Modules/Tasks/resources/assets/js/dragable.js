@@ -59,13 +59,11 @@ function handleDrop(event) {
     targetItem.style.borderBottom = "";
     draggedItem.style.opacity = "";
     draggedItem = null;
-
-    // updateOrder();
 }
 
 function updateOrder(frm) {
     const orderedItems = Array.from(dragList.children).map(item => item.dataset.id);
-    console.log("New Order:", orderedItems);
+    // console.log("New Order:", orderedItems);
     frm.new_order.value = JSON.stringify(orderedItems);
     return true;
 }
