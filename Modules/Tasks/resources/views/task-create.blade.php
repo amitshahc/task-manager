@@ -6,8 +6,8 @@
             {{ __('Create New Task') }}
         </h2>
     </div>
-    
-    
+
+
     @include('tasks::message')
 
     <form action="{{ route('tasks.store') }}" method="POST">
@@ -22,7 +22,7 @@
             <x-input-label>
                 {{ __('Title') }}
             </x-input-label>
-            <x-text-input name="title" maxlength=100 />
+            <x-text-input name="title" maxlength=100 value="{{ old('title') }}" />
 
             <x-input-error :messages="$errors->get('title')" class="mt-2" />
         </div>
@@ -31,7 +31,9 @@
             <x-input-label>
                 {{ __('Descrption') }}
             </x-input-label>
-            <x-textarea-input name="description" class="w-full block" maxlength=255 />
+            <x-textarea-input name="description" class="w-full block" maxlength=255>
+            {{ old('description') }}
+            </x-textarea-input>
             <small class="block">maximum length 255</small>
             <x-input-error :messages="$errors->get('description')" class="mt-2" />
         </div>

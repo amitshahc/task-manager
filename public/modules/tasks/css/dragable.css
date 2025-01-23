@@ -1,0 +1,11 @@
+.drag-list {
+    list-style: none;
+    padding: 0;
+}
+
+.drag-item {
+    /* background-color: rgba(86, 103, 255, 0.81); */
+    /* padding: 10px; */
+    margin-bottom: 15px;
+    cursor: move;
+}

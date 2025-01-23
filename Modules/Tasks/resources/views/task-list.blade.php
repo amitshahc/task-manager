@@ -5,50 +5,66 @@
 
     @include('tasks::projects')
 
-    <ul id="dragList" class="drag-list">
+    <ul id="dragList" class="drag-list flex flex-col">
         @forelse ($tasks as $task)
-            <li class="drag-item" draggable="true">
-                <h2>{{ $task->title }}</h2>
-                <p>{{ $task->description }}</p>
+            <li class="drag-item" draggable="true" data-id="{{ $task->id }}">
+                <div class="bg-gray-500 rounded-lg shadow-md p-6 mb-6">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white-500">{{ $task->title }}</h3>
+                            <p class="text-gray-300 text-sm mt-1">{!! nl2br($task->description) !!}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="{{ route('tasks.edit', $task) }}"
+                                class="inline-flex items-center px-3 py-1.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <x-secondary-button>
+                                    Edit
+                                </x-secondary-button>
+                            </a>
+                            <form action="{{ route('tasks.destroy', $task) }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <x-red-button type="submit">
+                                    Delete
+                                </x-red-button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </li>
         @empty
             {{ __('No task found.') }}
         @endforelse
-        {{-- <li class="drag-item" draggable="true">
-            <h2>Mobile</h2>
-            <p>
-                Descrption
-            </p>
-        </li>
-        <li class="drag-item" draggable="true">Laptop</li>
-        <li class="drag-item" draggable="true">Desktop</li>
-        <li class="drag-item" draggable="true">Television</li>
-        <li class="drag-item" draggable="true">Radio</li> --}}
     </ul>
 
-    <form method="GET" action="{{ route('tasks.create') }}"
-        onsubmit="this.project_id_current.value = document.getElementById('projects_menu').value">
-        <input type="hidden" name="project_id_current" value="{{ $project_id_current }}" />
-        <div class="relative h-32 w-32">
-            <div class="absolute bottom-0 right-0 h-16 w-16">
-                <x-primary-button class="ms-4 flex-right" type="submit">
-                    {{ __('Add New Task') }}
-                </x-primary-button>
-            </div>
+    <div class="mx-4  flex justify-between items-center">
+        <div class="inline-flex">
+            <form method="POST" action="{{ route('tasks.reorder') }}" onsubmit="return updateOrder(this)">
+                @csrf
+                <input type="hidden" name="new_order" />
+                <input type="hidden" name="project_id_current" value="{{ $project_id_current }}" />
+                <x-secondary-button type="submit">
+                    Save Order
+                </x-secondary-button>
+            </form>
         </div>
-    </form>
+        <div class="inline-flex">
+            <form method="GET" action="{{ route('tasks.create') }}"
+                onsubmit="this.project_id_current.value = document.getElementById('projects_menu').value">
+                <input type="hidden" name="project_id_current" value="{{ $project_id_current }}" />
+                <div class="relative h-32 w-32">
+                    <div class="bottom-0 right-0">
+                        <x-primary-button class="ms-4 flex-right" type="submit">
+                            {{ __('Add New Task') }}
+                        </x-primary-button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
-    <style>
-        .drag-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .drag-item>h2 {
-            background-color: rgba(86, 103, 255, 0.81);
-            padding: 10px;
-            margin-bottom: 5px;
-            cursor: move;
-        }
-    </style>
+    @push('local_scripts')
+        <script src="{{ Module::asset('tasks:js/dragable.js') }}"></script>
+        <link href="{{ Module::asset('tasks:css/dragable.css') }}" rel="stylesheet">
+    @endpush
 @endsection

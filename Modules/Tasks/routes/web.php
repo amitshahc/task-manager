@@ -18,4 +18,5 @@ use Modules\Tasks\Http\Controllers\TasksController;
 Route::group([], function () {
     Route::resource('tasks', TasksController::class)->names('tasks');
     Route::resource('projects', ProjectsController::class)->names('projects');
+    Route::post('tasks/reorder', [TasksController::class, 'reorder'])->name('tasks.reorder');
 });

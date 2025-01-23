@@ -9,6 +9,8 @@ class Tasks extends Model
 {
     protected $guarded = [];
 
+    protected $fillable = ['title', 'description', 'is_completed', 'priority', 'project_id'];
+
     public function project()
     {
         return $this->belongsTo(Project::class);

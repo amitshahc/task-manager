@@ -17,4 +17,12 @@ class Projects extends Model
     {
         return $this->hasMany(Tasks::class);
     }
+
+    /**
+     * Mutetor for project name
+     */
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = ucfirst($value);
+    }
 }
