@@ -2,16 +2,11 @@
 
 namespace Modules\Tasks\Repositories;
 
-// use App\Models\Projects;
 use App\Models\Tasks;
 use App\Models\User;
-// use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-// use Illuminate\Support\Facades\Config;
 
 class TasksRepository
 {
-    // use AuthorizesRequests;
-
     public function __construct() {}
 
     public function createTask(User $user, $task)
