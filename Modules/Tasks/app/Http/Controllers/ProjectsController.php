@@ -3,7 +3,7 @@
 namespace Modules\Tasks\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Contracts\Database\Query\Builder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
