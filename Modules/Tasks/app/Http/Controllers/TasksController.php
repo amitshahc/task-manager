@@ -23,7 +23,6 @@ class TasksController extends Controller
      */
     public function index(Request $request, ProjectsRepository $repoProjects, TasksRepository $repoTasks)
     {
-
         $projects = $repoProjects->getUserProjectList(Auth::user());
 
         $project_id_current = $request->has('project_id_current') ?  $request->get('project_id_current') : $projects->first()->id;

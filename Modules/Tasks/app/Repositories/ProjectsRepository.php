@@ -2,7 +2,6 @@
 
 namespace Modules\Tasks\Repositories;
 
-use App\Models\Projects;
 use App\Models\User;
 use Illuminate\Support\Facades\Config;
 
