@@ -1,6 +1,11 @@
 @extends('tasks::layouts.master')
 
 @section('content')
+    <div class="mb-4">
+        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+            {{ __('Task List') }}
+        </h2>
+    </div>
     @include('tasks::message')
 
     @include('tasks::projects')
