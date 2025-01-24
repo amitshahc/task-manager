@@ -53,4 +53,5 @@ DB_PASSWORD=task_manager
 * Using breeze's css with tailwind, not much worked on css part
 * Using breeze's blade components but also have made mine custom
 * No SQL query written in the code
+* Secured against cross user invation using known ids from other users 
 * I would recommend it to create this application as Laravel microservice with Restful API (back-end) and ReactJS (front-end) application. but not done due to time constrain. 
