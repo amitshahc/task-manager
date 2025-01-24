@@ -18,6 +18,7 @@ class ProjectsController extends Controller
             $validated = $request->validate([
                 'new_project' => [
                     'required',
+                    'max:50',
                     Rule::unique('projects', 'name')->where(fn(Builder $query) => $query->where('user_id', Auth::id()))
                 ]
             ]);
