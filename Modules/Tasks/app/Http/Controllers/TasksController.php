@@ -136,7 +136,7 @@ class TasksController extends Controller
             return redirect()->route('tasks.index')->with('error', $th->getMessage());
         }
 
-        return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => $request->get('page')])->with('success',  __('Task updated successfully.'));
+        return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => session()->get('pagination.page')])->with('success',  __('Task updated successfully.'));
     }
 
     /**
@@ -153,7 +153,7 @@ class TasksController extends Controller
             return redirect()->route('tasks.index')->with('error', $th->getMessage());
         }
 
-        return redirect()->route('tasks.index', ['project_id_current' => $project->id, 'page' => $request->get('page')])->with('success',  __('Task deleted successfully.'));
+        return redirect()->route('tasks.index', ['project_id_current' => $project->id, 'page' => session()->get('pagination.page')])->with('success',  __('Task deleted successfully.'));
     }
 
     public function reorder(Request $request, TasksRepository $repo)
@@ -175,7 +175,7 @@ class TasksController extends Controller
             ]);
 
             if ($Validator->fails()) {
-                return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => $request->get('page')])->withErrors($Validator->errors());
+                return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => session()->get('pagination.page')])->withErrors($Validator->errors());
             }
 
             $project_id = $request->get('project_id_current');
@@ -184,8 +184,8 @@ class TasksController extends Controller
 
             $repo->reorderProjectTasks(Auth::user(), $project_id, $old_ordered_ids, $new_ordered_ids);
         } catch (Throwable $th) {
-            return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => $request->get('page')])->with('error', $th->getMessage());
+            return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => session()->get('pagination.page')])->with('error', $th->getMessage());
         }
-        return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => $request->get('page')])->with('success', 'Task order saved successfully.');
+        return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => session()->get('pagination.page')])->with('success', 'Task order saved successfully.');
     }
 }

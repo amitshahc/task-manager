@@ -30,13 +30,13 @@
                             <p class="text-gray-300 text-sm mt-1">{!! nl2br($task->description) !!}</p>
                         </div>
                         <div class="flex space-x-2">
-                            <a href="{{ route('tasks.edit', ['task' => $task, 'page' => $tasks->currentPage()]) }}"
+                            <a href="{{ route('tasks.edit', ['task' => $task]) }}"
                                 class="inline-flex items-center px-3 py-1.5 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 <x-secondary-button>
                                     Edit
                                 </x-secondary-button>
                             </a>
-                            <form action="{{ route('tasks.destroy', ['task' => $task, 'page' => $tasks->currentPage()]) }}"
+                            <form action="{{ route('tasks.destroy', ['task' => $task, 'page' => Session::get('pagination.page')]) }}"
                                 method="POST" onsubmit="return confirm('Are you sure, You want to delete the recored?')">
                                 @csrf
                                 @method('DELETE')
@@ -57,7 +57,7 @@
 
         <div class="inline-flex">
             @if (!$tasks->isEmpty())
-                <form method="POST" action="{{ route('tasks.reorder', ['page' => $tasks->currentPage()]) }}"
+                <form method="POST" action="{{ route('tasks.reorder', ['page' => Session::get('pagination.page')]) }}"
                     onsubmit="return updateOrder(this)" id="frmReorder">
                     @csrf
                     <input type="hidden" name="old_order" />

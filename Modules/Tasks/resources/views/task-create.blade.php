@@ -39,7 +39,7 @@
         </div>
 
         <div class="mt-4 text-left">
-            <a href="{{ route('tasks.index', ['project_id_current' => $project->id]) }}">
+            <a href="{{ route('tasks.index', ['project_id_current' => $project->id, 'page' => session()->get('pagination.page')]) }}">
                 <x-secondary-button type="button">
                     {{ __('Cancel') }}
                 </x-secondary-button>

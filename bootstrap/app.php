@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Modules\Tasks\Http\Middleware\PreservePagination;
 use Modules\Tasks\Http\Middleware\Sanitizer;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -13,6 +14,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->append(Sanitizer::class);
+        // $middleware->append(PreservePagination::class);
+        // $middleware->alias(['preserve_pagination' => PreservePagination::class]);
+        $middleware->appendToGroup('web', [
+            'preserve_pagination' => PreservePagination::class
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

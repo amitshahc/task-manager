@@ -11,7 +11,7 @@
     @include('tasks::message')
 
     <form
-        action="{{ route('tasks.update', ['task' => $task, 'project_id_current' => $project->id, 'page' => Request::get('page')]) }}"
+        action="{{ route('tasks.update', ['task' => $task, 'project_id_current' => $project->id, 'page' => Session::get('pagination.page')]) }}"
         method="POST">
         @csrf
         @method('PATCH')
@@ -40,7 +40,7 @@
         </div>
 
         <div class="mt-4 text-left">
-            <a href="{{ route('tasks.index', ['project_id_current' => $project->id, 'page' => Request::get('page')]) }}">
+            <a href="{{ route('tasks.index', ['project_id_current' => $project->id, 'page' => session()->get('pagination.page')]) }}">
                 <x-secondary-button type="button">
                     {{ __('Cancel') }}
                 </x-secondary-button>
