@@ -7,6 +7,7 @@ use Illuminate\Database\Query\Builder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Modules\Tasks\Repositories\ProjectsRepository;
@@ -23,11 +24,22 @@ class TasksController extends Controller
      */
     public function index(Request $request, ProjectsRepository $repoProjects, TasksRepository $repoTasks)
     {
+        if ($request->has('per_page')) {
+            $request->session()->put('per_page', $request->get('per_page'));
+        }
+
         $projects = $repoProjects->getUserProjectList(Auth::user());
 
         $project_id_current = $request->has('project_id_current') ?  $request->get('project_id_current') : $projects->first()->id;
 
-        $tasks = $repoTasks->getProjectTasks(Auth::user(), $project_id_current);
+        $tasks = $repoTasks->getProjectTasks(Auth::user(), $project_id_current, session()->get('per_page') ?? Config::get('tasks.task-list.per_page'));
+
+        // redirect to last page if new record created 
+        if (session('created')) {
+            session()->keep('success');
+            $lastPage = $tasks->lastPage();
+            return redirect()->route('tasks.index', ['project_id_current' => $project_id_current, 'page' => $lastPage]);
+        }
 
         return view('tasks::task-list', ['projects' => $projects, 'tasks' => $tasks, 'project_id_current' => $project_id_current]);
     }
@@ -50,7 +62,9 @@ class TasksController extends Controller
             'title' => [
                 'required',
                 'max:100',
-                Rule::unique('tasks', 'title')->where(fn(Builder $query) => $query->where('project_id', $request->get('project_id_current')))
+                Rule::unique('tasks', 'title')
+                    ->whereNull('deleted_at')
+                    ->where(fn(Builder $query) => $query->where('project_id', $request->get('project_id_current')))
             ],
             'description' => ['required', 'max:255'],
             'project_id_current' => [
@@ -67,6 +81,7 @@ class TasksController extends Controller
             return redirect()->route('tasks.create', ['project_id_current' => $request->get('project_id_current')])->with('error', $th->getMessage());
         }
 
+        session()->flash('created', true);
         return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current')])->with('success',  __('Task created successfully.'));
     }
 
@@ -103,7 +118,8 @@ class TasksController extends Controller
             'title' => [
                 'required',
                 'max:100',
-                Rule::unique('tasks', 'title')->ignore($id)->where(fn(Builder $query) => $query->where('project_id', $request->get('project_id_current')))
+                Rule::unique('tasks', 'title')->ignore($id)->whereNull('deleted_at')
+                    ->where(fn(Builder $query) => $query->where('project_id', $request->get('project_id_current')))
             ],
             'description' => ['required', 'max:255'],
             'project_id_current' => [
@@ -120,13 +136,13 @@ class TasksController extends Controller
             return redirect()->route('tasks.index')->with('error', $th->getMessage());
         }
 
-        return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current')])->with('success',  __('Task updated successfully.'));
+        return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => $request->get('page')])->with('success',  __('Task updated successfully.'));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id, TasksRepository $repo)
+    public function destroy(Request $request, $id, TasksRepository $repo)
     {
         try {
             $task = $repo->getTask($id);
@@ -137,7 +153,7 @@ class TasksController extends Controller
             return redirect()->route('tasks.index')->with('error', $th->getMessage());
         }
 
-        return redirect()->route('tasks.index', ['project_id_current' => $project->id])->with('success',  __('Task deleted successfully.'));
+        return redirect()->route('tasks.index', ['project_id_current' => $project->id, 'page' => $request->get('page')])->with('success',  __('Task deleted successfully.'));
     }
 
     public function reorder(Request $request, TasksRepository $repo)
@@ -151,20 +167,25 @@ class TasksController extends Controller
                 'new_order' => [
                     'required',
                     'json'
+                ],
+                'old_order' => [
+                    'required',
+                    'json'
                 ]
             ]);
 
             if ($Validator->fails()) {
-                return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current')])->withErrors($Validator->errors());
+                return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => $request->get('page')])->withErrors($Validator->errors());
             }
 
             $project_id = $request->get('project_id_current');
-            $ordered_ids = json_decode($request->get('new_order'), true);
+            $new_ordered_ids = json_decode($request->get('new_order'), true);
+            $old_ordered_ids = json_decode($request->get('old_order'), true);
 
-            $repo->reorderProjectTasks(Auth::user(), $project_id, $ordered_ids);
+            $repo->reorderProjectTasks(Auth::user(), $project_id, $old_ordered_ids, $new_ordered_ids);
         } catch (Throwable $th) {
-            return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current')])->with('error', $th->getMessage());
+            return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => $request->get('page')])->with('error', $th->getMessage());
         }
-        return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current')])->with('success', 'Task order saved successfully.');
+        return redirect()->route('tasks.index', ['project_id_current' => $request->get('project_id_current'), 'page' => $request->get('page')])->with('success', 'Task order saved successfully.');
     }
 }

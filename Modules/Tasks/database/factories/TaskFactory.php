@@ -11,6 +11,7 @@ class TaskFactory extends Factory
      */
     protected $model = \App\Models\Tasks::class;
 
+    protected static $priority = 0;
     /**
      * Define the model's default state.
      */
@@ -18,7 +19,8 @@ class TaskFactory extends Factory
     {
         return [
             'title' => fake()->sentence(),
-            'description' => fake()->text()
+            'description' => fake()->text(),
+            'priority' => ++static::$priority
         ];
     }
 }

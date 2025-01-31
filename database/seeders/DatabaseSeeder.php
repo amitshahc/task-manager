@@ -18,8 +18,8 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()
             ->has(
-                Projects::factory(1)
-                    ->has(Tasks::factory(5), 'tasks'),
+                Projects::factory(2)
+                    ->has(Tasks::factory(10), 'tasks'),
                 'projects'
             )
             ->create([

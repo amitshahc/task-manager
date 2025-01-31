@@ -10,11 +10,12 @@
 
     @include('tasks::message')
 
-    <form action="{{ route('tasks.update', $task) }}" method="POST">
+    <form
+        action="{{ route('tasks.update', ['task' => $task, 'project_id_current' => $project->id, 'page' => Request::get('page')]) }}"
+        method="POST">
         @csrf
         @method('PATCH')
-        <input type="hidden" name="project_id_current" value="{{ $project->id }}" />
-
+        
         <x-input-label>
             {{ __('Project') }} : {{ $project->name }}
         </x-input-label>
@@ -39,7 +40,7 @@
         </div>
 
         <div class="mt-4 text-left">
-            <a href="{{ route('tasks.index', ['project_id_current' => $project->id]) }}">
+            <a href="{{ route('tasks.index', ['project_id_current' => $project->id, 'page' => Request::get('page')]) }}">
                 <x-secondary-button type="button">
                     {{ __('Cancel') }}
                 </x-secondary-button>

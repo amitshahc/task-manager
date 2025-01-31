@@ -67,3 +67,9 @@ function updateOrder(frm) {
     frm.new_order.value = JSON.stringify(orderedItems);
     return true;
 }
+
+(function(){
+    frm = document.getElementById('frmReorder');
+    const orderedItems = Array.from(dragList.children).map(item => item.dataset.id);
+    frm.old_order.value = JSON.stringify(orderedItems);
+})()
